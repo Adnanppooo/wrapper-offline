@@ -4,6 +4,7 @@ const voices = require('./info').voices;
 const asset = require('../asset/main');
 const get = require('../request/get');
 const qs = require('querystring');
+const brotli = require('brotli');
 const https = require('https');
 const http = require('http');
 
@@ -12,34 +13,21 @@ function processVoice(voiceName, text) {
 		const voice = voices[voiceName];
 		switch (voice.source) {
 			case 'polly': {
+				https.get('https://nextup.com/ivona/index.html', (r) => {
 				var q = qs.encode({
-					texttype: "text",
-					text: text,
-					fallbackLanguage: "0",
 					voice: voice.arg,
-					rate: "0",
-					whisper: "false",
-					soft: "false",
-					wordbreakms: "0",
-					volume: "0",
-					marksid: "ca6108ea-0a10-476d-9c87-b32508002c80",
-					d: "true",
-					format: "mp3",
+				    language: `${voice.language}-${voice.country}`,
+					text: text
 				});
-				https.get({
-					host: 'talkify.net',
-					path: `/api/internal/speech?${q}`,
-					method: 'GET',
-					headers: {
-						Referer: 'https://talkify.net/text-to-speech',
-						Origin: 'https://talkify.net',
-						'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36',
-					},
-				}, r => {
-					var buffers = [];
-					r.on('data', d => buffers.push(d));
-					r.on('end', () => res(Buffer.concat(buffers)));
-					r.on('error', rej);
+				var buffers = [];
+                var req = https.get(`https://nextup.com/ivona/php/nextup-polly/CreateSpeech/CreateSpeechGet3.php?${q}`, (r) => {
+                    r.on("data", (d) => buffers.push(d));
+                    r.on("end", () => {
+                        const loc = Buffer.concat(buffers).toString();
+                        get(loc).then(res).catch(rej);
+                    });
+                    r.on("error", rej);
+                    });
 				});
 				break;
 			}
@@ -127,7 +115,7 @@ function processVoice(voiceName, text) {
 				});
 				console.log(https.get({
 					host: 'text-to-speech-demo.ng.bluemix.net',
-					path: `/api/v1/synthesize?${q}`,
+					path: `/api/v3/synthesize?${q}`,
 				}, r => {
 					var buffers = [];
 					r.on('data', d => buffers.push(d));
@@ -163,7 +151,35 @@ function processVoice(voiceName, text) {
 				}));
 				break;
 			}
-            case 'readloud': {
+            case 'cereproc': {
+                const req = https.request({
+                    hostname: 'www.cereproc.com',
+                    path: '/themes/benchpress/livedemo.php',
+                    method: 'POST',
+                    headers: {
+                        "content-type": "text/xml",
+                        'accept-encoding': 'gzip, deflate, br',
+                        'origin': 'https://www.cereproc.com',
+                        'referer': 'https://www.cereproc.com/en/products/voices',
+                        'x-requested-with': 'XMLHttpRequest',
+                        'cookie': 'has_js=1; _ga=GA1.2.1662842090.1593634776; _gid=GA1.2.1522751685.1593634776; Drupal.visitor.liveDemo=qyzyt95c789; cookie-agreed=2',
+                    },
+                }, r => {
+                    var buffers = [];
+                    r.on('data', d => buffers.push(d));
+                    r.on('end', () => {
+                        const xml = String.fromCharCode.apply(null, brotli.decompress(Buffer.concat(buffers)));
+                        const beg = xml.indexOf('https://cerevoice.s3.amazonaws.com/');
+                        const end = xml.indexOf('.mp3', beg) + 4;
+                        const loc = xml.substr(beg, end - beg).toString();
+                        get(loc).then(res).catch(rej);
+                    })
+                    r.on('error', rej);
+                });
+                req.end(`<speakExtended key='qyzyt95c789'><voice>${voice.arg}</voice><text>${text}</text><audioFormat>mp3</audioFormat></speakExtended>`);
+                break;
+            }
+            case 'ivona': {
                 const req = https.request({
                     host: 'readloud.net',
                     path: voice.arg,
@@ -192,6 +208,28 @@ function processVoice(voiceName, text) {
                 req.end();
                 break;
             }
+			case 'pollyextra': {
+				var buffers = [];
+				var req = https.request({
+					hostname: 'pollyvoices.com',
+					port: '443',
+					path: '/api/sound/add',
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/x-www-form-urlencoded',
+					},
+				}, r => {
+					r.on('data', b => buffers.push(b));
+					r.on('end', () => {
+						var json = JSON.parse(Buffer.concat(buffers));
+						if (json.file) get(`https://pollyvoices.com${json.file}`).then(res);
+						else rej();
+					});
+				});
+				req.write(qs.encode({ text: text, voice: voice.arg }));
+				req.end();
+				break;
+			}
 		}
 	});
 }
