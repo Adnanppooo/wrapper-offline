@@ -15486,6 +15486,7 @@
 	<prop id="guitar.swf" name="Guitar" holdable="1" placeable="1" wearable="0" facing="left" thumb="" enable="Y" is_premium="N" aid="3213" money="0" sharing="0" />
 	<prop id="saxophone.swf" name="Saxophone" holdable="1" placeable="1" wearable="0" facing="left" thumb="" enable="Y" is_premium="N" aid="3214" money="0" sharing="0" handstyle="flat" />
 	<prop id="glass1.swf" name="Glass" holdable="1" placeable="1" wearable="0" facing="left" thumb="" enable="Y" is_premium="N" aid="3215" money="0" sharing="0" />
+        <prop id="0128f9be044ba2118be20f87214735a2a27078018a.jpg" name="Adnan Error" holdable="1" placeable="1" wearable="0" facing="left" thumb="" enable="Y" is_premium="N" aid="3215" money="0" sharing="0" />
 	<prop id="prop01.swf" name="Sword" holdable="1" placeable="1" wearable="0" facing="left" thumb="" enable="Y" is_premium="N" aid="3216" money="0" sharing="0" handstyle="stick" />
 	<prop id="prop02.swf" name="Gun" holdable="1" placeable="1" wearable="0" facing="left" thumb="" enable="Y" is_premium="N" aid="3217" money="0" sharing="0" handstyle="stick" />
 	<prop id="wine1.swf" name="Wine" holdable="1" placeable="1" wearable="0" facing="left" thumb="" enable="Y" is_premium="N" aid="3218" money="0" sharing="0" handstyle="flat" />
@@ -16471,6 +16472,15 @@
 		<state id="msp_handshape_ncc_hand03.swf" name="back" enable="Y" />
 		<state id="msp_handshape_ncc_hand04.swf" name="pointing" enable="Y" />
 		<state id="msp_handshape_ncc_hand05.swf" name="fist" enable="Y" />
+                <state id="msp_handshape_ncc_hand06.swf" name="side" enable="Y"/>
+                <state id="msp_handshape_ncc_hand07.swf" name="fist front" enable="Y"/>
+                <state id="msp_handshape_ncc_hand08.swf" name="back palm" enable="Y"/>
+                <state id="msp_handshape_ncc_hand09.swf" name="pointing front" enable="Y"/>
+                <state id="msp_handshape_ncc_hand10.swf" name="curl left" enable="Y"/>
+                <state id="msp_handshape_ncc_hand11.swf" name="curl right" enable="Y"/>
+                <state id="msp_handshape_ncc_hand12.swf" name="scratching" enable="Y"/>
+                <state id="msp_handshape_ncc_hand13.swf" name="bottom" enable="Y"/>
+                <state id="msp_handshape_ncc_hand14.swf" name="fingers only" enable="Y"/>
 	</prop>
 	<prop id="ncc_pie02_full.swf" name="Pie" holdable="0" placeable="1" wearable="0" facing="left" thumb="" enable="Y" is_premium="N" aid="11377" money="0" sharing="0" />
 	<prop id="msp_ncc_gun_ak47" name="AK47" holdable="1" placeable="1" wearable="0" facing="left" thumb="msp_ncc_gun_ak47_ncc_05ak47_still.swf" enable="Y" is_premium="N" aid="11409" money="0" sharing="0" handstyle="gun">
